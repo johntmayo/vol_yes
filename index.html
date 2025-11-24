@@ -158,6 +158,113 @@
             color: #999;
             font-size: 1.2em;
         }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            color: #667eea;
+        }
+
+        .view-btn:hover {
+            background: #f0f4ff;
+        }
+
+        .view-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .list-view {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .list-view h3 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .email-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #333;
+            max-height: 200px;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+
+        .copy-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .list-view table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .list-view th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .list-view td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .list-view tr:hover {
+            background: #f8f9fa;
+        }
+
+        .copied-message {
+            display: none;
+            color: #28a745;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .copied-message.show {
+            display: inline;
+        }
     </style>
 </head>
 <body>
@@ -186,7 +293,30 @@
 
             <main class="main-content">
                 <div class="volunteer-count" id="count"></div>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('grid')">Card View</button>
+                    <button class="view-btn" onclick="switchView('list')">List View</button>
+                </div>
                 <div class="volunteer-grid" id="volunteerGrid"></div>
+                <div class="list-view" id="listView" style="display: none;">
+                    <h3>Email List</h3>
+                    <div class="email-list" id="emailList"></div>
+                    <button class="copy-btn" onclick="copyEmails()">
+                        📋 Copy All Emails
+                    </button>
+                    <span class="copied-message" id="copiedMessage">✓ Copied to clipboard!</span>
+                    
+                    <h3>Volunteer Details</h3>
+                    <table id="volunteerTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
             </main>
         </div>
     </div>
@@ -230,9 +360,13 @@
         ];
 
         let currentFilter = 'all';
+        let currentView = 'grid';
 
         function renderVolunteers(filter) {
             const grid = document.getElementById('volunteerGrid');
+            const listView = document.getElementById('listView');
+            const emailList = document.getElementById('emailList');
+            const tableBody = document.getElementById('tableBody');
             const count = document.getElementById('count');
             
             let filtered = volunteers;
@@ -246,9 +380,12 @@
 
             if (filtered.length === 0) {
                 grid.innerHTML = '<div class="no-results">No volunteers found for this activity</div>';
+                emailList.innerHTML = 'No volunteers found';
+                tableBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #999;">No volunteers found</td></tr>';
                 return;
             }
 
+            // Render grid view
             grid.innerHTML = filtered.map(v => `
                 <div class="volunteer-card">
                     <div class="volunteer-name">${v.name}</div>
@@ -258,6 +395,47 @@
                     </div>
                 </div>
             `).join('');
+
+            // Render list view
+            const emails = filtered.map(v => v.email).join('; ');
+            emailList.textContent = emails;
+
+            tableBody.innerHTML = filtered.map(v => `
+                <tr>
+                    <td>${v.name}</td>
+                    <td>${v.email}</td>
+                </tr>
+            `).join('');
+        }
+
+        function switchView(view) {
+            currentView = view;
+            const grid = document.getElementById('volunteerGrid');
+            const listView = document.getElementById('listView');
+            const buttons = document.querySelectorAll('.view-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (view === 'grid') {
+                grid.style.display = 'grid';
+                listView.style.display = 'none';
+            } else {
+                grid.style.display = 'none';
+                listView.style.display = 'block';
+            }
+        }
+
+        function copyEmails() {
+            const emailList = document.getElementById('emailList');
+            const copiedMessage = document.getElementById('copiedMessage');
+            
+            navigator.clipboard.writeText(emailList.textContent).then(() => {
+                copiedMessage.classList.add('show');
+                setTimeout(() => {
+                    copiedMessage.classList.remove('show');
+                }, 2000);
+            });
         }
 
         function filterByActivity(activity) {
