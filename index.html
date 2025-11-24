@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volunteer Activity Coordinator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,8 +15,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #afcc8e 0%, #cdf4a0 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -21,86 +24,233 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: #FEFAE0;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(40, 54, 24, 0.2);
             overflow: hidden;
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #606C38 0%, #283618 100%);
+            color: #FEFAE0;
             padding: 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(175, 204, 142, 0.1);
+            border-radius: 50%;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 200px;
+            height: 200px;
+            background: rgba(221, 161, 94, 0.1);
+            border-radius: 50%;
         }
 
         h1 {
-            font-size: 2.5em;
+            font-family: 'Alegreya', serif;
+            font-weight: 800;
+            font-size: 2.8em;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            opacity: 0.9;
-            font-size: 1.1em;
+            opacity: 0.95;
+            font-size: 1.15em;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
         }
 
         .content {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 320px 1fr;
             min-height: 600px;
         }
 
+        @media (max-width: 968px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 2px solid #DDA15E;
+                padding: 20px;
+            }
+
+            .activity-btn:hover {
+                transform: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .volunteer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .volunteer-card {
+                padding: 15px;
+            }
+
+            .list-view {
+                padding: 20px;
+            }
+
+            .list-view table {
+                font-size: 0.9em;
+            }
+
+            .list-view th,
+            .list-view td {
+                padding: 10px 8px;
+            }
+
+            .email-list {
+                font-size: 0.8em;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+            }
+
+            .activity-btn {
+                font-size: 0.9em;
+                padding: 10px 12px;
+            }
+
+            .volunteer-name {
+                font-size: 1.1em;
+            }
+
+            .volunteer-email {
+                font-size: 0.85em;
+            }
+
+            .activity-tag {
+                font-size: 0.8em;
+                padding: 4px 10px;
+            }
+
+            .view-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+
+            .copy-btn {
+                width: 100%;
+                padding: 14px;
+            }
+
+            .list-view h3 {
+                font-size: 1.1em;
+            }
+        }
+
         .sidebar {
-            background: #f8f9fa;
-            padding: 30px;
-            border-right: 1px solid #e0e0e0;
+            background: linear-gradient(180deg, #FEFAE0 0%, #f5f1d3 100%);
+            padding: 30px 25px;
+            border-right: 2px solid #DDA15E;
         }
 
         .sidebar h2 {
-            font-size: 1.3em;
-            margin-bottom: 20px;
-            color: #333;
+            font-family: 'Alegreya', serif;
+            font-weight: 800;
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            color: #283618;
         }
 
         .activity-btn {
             display: block;
             width: 100%;
-            padding: 12px 15px;
+            padding: 13px 16px;
             margin-bottom: 10px;
             background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border: 2px solid #afcc8e;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 0.95em;
             text-align: left;
-            color: #333;
+            color: #283618;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
         }
 
         .activity-btn:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
+            border-color: #606C38;
+            background: #f9fdf5;
             transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(96, 108, 56, 0.15);
         }
 
         .activity-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
+            background: linear-gradient(135deg, #606C38 0%, #283618 100%);
+            color: #FEFAE0;
+            border-color: #606C38;
+            box-shadow: 0 4px 16px rgba(96, 108, 56, 0.3);
         }
 
         .main-content {
             padding: 40px;
+            background: #FEFAE0;
         }
 
         .volunteer-count {
             font-size: 1.2em;
-            color: #666;
+            color: #283618;
             margin-bottom: 30px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            padding: 18px;
+            background: white;
+            border-radius: 12px;
             text-align: center;
+            border: 2px solid #cdf4a0;
+            font-weight: 600;
         }
 
         .volunteer-grid {
@@ -111,30 +261,32 @@
 
         .volunteer-card {
             background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 20px;
+            border: 2px solid #afcc8e;
+            border-radius: 16px;
+            padding: 22px;
             transition: all 0.3s ease;
         }
 
         .volunteer-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-color: #667eea;
+            box-shadow: 0 12px 35px rgba(96, 108, 56, 0.15);
+            border-color: #606C38;
         }
 
         .volunteer-name {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #333;
+            font-family: 'Alegreya', serif;
+            font-weight: 800;
+            font-size: 1.35em;
+            color: #283618;
             margin-bottom: 8px;
         }
 
         .volunteer-email {
-            color: #667eea;
+            color: #BC6C25;
             font-size: 0.9em;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             word-break: break-all;
+            font-weight: 500;
         }
 
         .volunteer-activities {
@@ -144,19 +296,21 @@
         }
 
         .activity-tag {
-            background: #f0f4ff;
-            color: #667eea;
-            padding: 5px 12px;
+            background: #cdf4a0;
+            color: #283618;
+            padding: 6px 13px;
             border-radius: 20px;
             font-size: 0.85em;
-            border: 1px solid #667eea;
+            border: 1.5px solid #afcc8e;
+            font-weight: 500;
         }
 
         .no-results {
             text-align: center;
             padding: 60px 20px;
-            color: #999;
+            color: #606C38;
             font-size: 1.2em;
+            font-weight: 500;
         }
 
         .view-toggle {
@@ -167,66 +321,77 @@
         }
 
         .view-btn {
-            padding: 10px 20px;
+            padding: 11px 22px;
             background: white;
-            border: 2px solid #667eea;
-            border-radius: 10px;
+            border: 2px solid #afcc8e;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 0.95em;
-            color: #667eea;
+            color: #283618;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
         }
 
         .view-btn:hover {
-            background: #f0f4ff;
+            background: #f9fdf5;
+            border-color: #606C38;
         }
 
         .view-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #BC6C25 0%, #DDA15E 100%);
+            color: #FEFAE0;
+            border-color: #BC6C25;
+            box-shadow: 0 4px 12px rgba(188, 108, 37, 0.3);
         }
 
         .list-view {
             background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
+            border: 2px solid #afcc8e;
+            border-radius: 16px;
             padding: 30px;
         }
 
         .list-view h3 {
-            font-size: 1.3em;
+            font-family: 'Alegreya', serif;
+            font-weight: 800;
+            font-size: 1.4em;
             margin-bottom: 20px;
-            color: #333;
+            color: #283618;
         }
 
         .email-list {
-            background: #f8f9fa;
+            background: #f9fdf5;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            font-family: monospace;
+            font-family: 'Inter', monospace;
             font-size: 0.9em;
-            color: #333;
+            color: #283618;
             max-height: 200px;
             overflow-y: auto;
             line-height: 1.8;
+            border: 2px solid #cdf4a0;
         }
 
         .copy-btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 13px 26px;
+            background: linear-gradient(135deg, #BC6C25 0%, #DDA15E 100%);
+            color: #FEFAE0;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 1em;
+            font-weight: 600;
             transition: all 0.3s ease;
             margin-bottom: 30px;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 12px rgba(188, 108, 37, 0.3);
         }
 
         .copy-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(188, 108, 37, 0.4);
         }
 
         .copy-btn:active {
@@ -239,27 +404,88 @@
         }
 
         .list-view th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
+            background: linear-gradient(135deg, #606C38 0%, #283618 100%);
+            color: #FEFAE0;
+            padding: 14px;
             text-align: left;
             font-weight: 600;
+            font-family: 'Alegreya', serif;
+            font-size: 1.1em;
         }
 
         .list-view td {
-            padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 13px 14px;
+            border-bottom: 1px solid #cdf4a0;
+            color: #283618;
+        }
+
+        .list-view td:first-child {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .list-view td:last-child {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
         }
 
         .list-view tr:hover {
-            background: #f8f9fa;
+            background: #f9fdf5;
+        }
+
+        .email-cell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .email-text {
+            flex: 1;
+        }
+
+        .copy-email-btn {
+            opacity: 0;
+            padding: 4px 8px;
+            background: #cdf4a0;
+            border: 1.5px solid #afcc8e;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8em;
+            color: #283618;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .list-view tr:hover .copy-email-btn {
+            opacity: 1;
+        }
+
+        .copy-email-btn:hover {
+            background: #afcc8e;
+            transform: scale(1.05);
+        }
+
+        .copy-email-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-email-btn.copied {
+            background: #606C38;
+            color: #FEFAE0;
         }
 
         .copied-message {
             display: none;
-            color: #28a745;
-            font-size: 0.9em;
+            color: #606C38;
+            font-size: 0.95em;
             margin-left: 10px;
+            font-weight: 600;
         }
 
         .copied-message.show {
@@ -400,12 +626,30 @@
             const emails = filtered.map(v => v.email).join('; ');
             emailList.textContent = emails;
 
-            tableBody.innerHTML = filtered.map(v => `
+            tableBody.innerHTML = filtered.map((v, index) => `
                 <tr>
                     <td>${v.name}</td>
-                    <td>${v.email}</td>
+                    <td>
+                        <div class="email-cell">
+                            <span class="email-text">${v.email}</span>
+                            <button class="copy-email-btn" onclick="copyEmail('${v.email}', ${index})">Copy</button>
+                        </div>
+                    </td>
                 </tr>
             `).join('');
+        }
+
+        function copyEmail(email, index) {
+            navigator.clipboard.writeText(email).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 1500);
+            });
         }
 
         function switchView(view) {
