@@ -287,6 +287,38 @@
             margin-bottom: 16px;
             word-break: break-all;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-card-btn {
+            opacity: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.2s ease;
+            color: #606C38;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .volunteer-card:hover .copy-card-btn {
+            opacity: 0.6;
+        }
+
+        .copy-card-btn:hover {
+            opacity: 1 !important;
+            transform: scale(1.1);
+        }
+
+        .copy-card-btn:active {
+            transform: scale(0.9);
+        }
+
+        .copy-card-btn.copied {
+            color: #afcc8e;
         }
 
         .volunteer-activities {
@@ -450,25 +482,27 @@
 
         .copy-email-btn {
             opacity: 0;
-            padding: 4px 8px;
-            background: #cdf4a0;
-            border: 1.5px solid #afcc8e;
+            padding: 6px;
+            background: none;
+            border: none;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 0.8em;
-            color: #283618;
-            font-weight: 600;
+            color: #606C38;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .list-view tr:hover .copy-email-btn {
-            opacity: 1;
+            opacity: 0.6;
         }
 
         .copy-email-btn:hover {
-            background: #afcc8e;
-            transform: scale(1.05);
+            opacity: 1 !important;
+            background: #f9fdf5;
+            transform: scale(1.1);
         }
 
         .copy-email-btn:active {
@@ -476,8 +510,7 @@
         }
 
         .copy-email-btn.copied {
-            background: #606C38;
-            color: #FEFAE0;
+            color: #afcc8e;
         }
 
         .copied-message {
@@ -612,10 +645,18 @@
             }
 
             // Render grid view
-            grid.innerHTML = filtered.map(v => `
+            grid.innerHTML = filtered.map((v, index) => `
                 <div class="volunteer-card">
                     <div class="volunteer-name">${v.name}</div>
-                    <div class="volunteer-email">${v.email}</div>
+                    <div class="volunteer-email">
+                        <span>${v.email}</span>
+                        <button class="copy-card-btn" onclick="copyCardEmail('${v.email}', 'card-${index}')" title="Copy email">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="volunteer-activities">
                         ${v.activities.map(a => `<span class="activity-tag">${a}</span>`).join('')}
                     </div>
@@ -632,22 +673,40 @@
                     <td>
                         <div class="email-cell">
                             <span class="email-text">${v.email}</span>
-                            <button class="copy-email-btn" onclick="copyEmail('${v.email}', ${index})">Copy</button>
+                            <button class="copy-email-btn" onclick="copyEmail('${v.email}', 'list-${index}')" title="Copy email">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
                         </div>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function copyEmail(email, index) {
+        function copyEmail(email, btnId) {
             navigator.clipboard.writeText(email).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✓';
+                const btn = event.target.closest('button');
                 btn.classList.add('copied');
+                const svg = btn.querySelector('svg');
+                svg.innerHTML = '<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" fill="none"/>';
                 setTimeout(() => {
-                    btn.textContent = originalText;
                     btn.classList.remove('copied');
+                    svg.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
+                }, 1500);
+            });
+        }
+
+        function copyCardEmail(email, btnId) {
+            navigator.clipboard.writeText(email).then(() => {
+                const btn = event.target.closest('button');
+                btn.classList.add('copied');
+                const svg = btn.querySelector('svg');
+                svg.innerHTML = '<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" fill="none"/>';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    svg.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
                 }, 1500);
             });
         }
