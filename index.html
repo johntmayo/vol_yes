@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Activity Coordinator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 30px;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .activity-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            text-align: left;
+            color: #333;
+        }
+
+        .activity-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .activity-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .volunteer-count {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .volunteer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .volunteer-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .volunteer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .volunteer-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .volunteer-email {
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        .volunteer-activities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .activity-tag {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            border: 1px solid #667eea;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤝 Volunteer Coordinator</h1>
+            <p class="subtitle">Find volunteers by activity</p>
+        </header>
+
+        <div class="content">
+            <aside class="sidebar">
+                <h2>Activities</h2>
+                <button class="activity-btn active" onclick="filterByActivity('all')">All Volunteers</button>
+                <button class="activity-btn" onclick="filterByActivity('Event planning or executing')">Event Planning/Executing</button>
+                <button class="activity-btn" onclick="filterByActivity('Helping support/onboard new captains')">Support/Onboard Captains</button>
+                <button class="activity-btn" onclick="filterByActivity('Supporting nearby neighbors who don\'t have a captain')">Support Neighbors w/o Captain</button>
+                <button class="activity-btn" onclick="filterByActivity('Organizing and coordinating with other captains in your census tract')">Organizing with Other Captains</button>
+                <button class="activity-btn" onclick="filterByActivity('Representing Altagether at community events (like staffing a table)')">Representing at Events</button>
+                <button class="activity-btn" onclick="filterByActivity('Fundraising/grant-writing')">Fundraising/Grant Writing</button>
+                <button class="activity-btn" onclick="filterByActivity('Social media')">Social Media</button>
+                <button class="activity-btn" onclick="filterByActivity('Art/Graphic design')">Art/Graphic Design</button>
+                <button class="activity-btn" onclick="filterByActivity('Visioning')">Visioning</button>
+                <button class="activity-btn" onclick="filterByActivity('Outreach')">Outreach</button>
+                <button class="activity-btn" onclick="filterByActivity('Strategy')">Strategy</button>
+            </aside>
+
+            <main class="main-content">
+                <div class="volunteer-count" id="count"></div>
+                <div class="volunteer-grid" id="volunteerGrid"></div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const volunteers = [
+            { name: "Adam Fischer", email: "afisch@gmail.com", activities: ["Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "Alex Christensen", email: "alex.nick277@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Fundraising/grant-writing"] },
+            { name: "Andrew King", email: "akingtfc@gmail.com", activities: ["Helping support/onboard new captains", "Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)", "Fundraising/grant-writing", "Visioning", "Outreach", "Strategy"] },
+            { name: "Andrew Lansford", email: "andrew@andrewlansford.com", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Angie Uriu", email: "uriuangela@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "Anthea Carrillo", email: "anthea.carrillo@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain", "Event planning or executing"] },
+            { name: "Ari Kennedy", email: "aribear@gmail.com", activities: ["Helping support/onboard new captains", "Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "Casey Gale", email: "casey.cowan.gale@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Daryl Bilandzija", email: "bilandzijadaryl@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "David Timoner", email: "david.timoner@icloud.com", activities: ["Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract"] },
+            { name: "Earl Brown", email: "busterbrown@wans.net", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Ellen Rippberger", email: "erippberger@gmail.com", activities: ["Helping support/onboard new captains", "Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "Elsa Banuelos", email: "ebanuelos3302@gmail.com", activities: ["Organizing and coordinating with other captains in your census tract"] },
+            { name: "Erica Warnock", email: "erica.warnock@gmail.com", activities: ["Representing Altagether at community events (like staffing a table)"] },
+            { name: "Hadi", email: "hadisalem@me.com", activities: ["Helping support/onboard new captains", "Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract"] },
+            { name: "Jacques Laramee", email: "mrlaramee@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Jayne Lubensky", email: "Altadena91@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Jody Scott", email: "jodyscott31@yahoo.com", activities: ["Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)", "Event planning or executing"] },
+            { name: "Joshua Smith", email: "joshuacs1390@gmail.com", activities: ["Organizing and coordinating with other captains in your census tract"] },
+            { name: "Kari Stewart", email: "paulkaristewart@gmail.com", activities: ["Representing Altagether at community events (like staffing a table)"] },
+            { name: "Kimberly Berry", email: "kimberlyjoyberry@pm.me", activities: ["Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "kirsten schaffer", email: "kirstenschaffer7@gmail.com", activities: ["Event planning or executing"] },
+            { name: "Lauren", email: "Glenroserising@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Lucie Russo", email: "lehrusso120@gmail.com", activities: ["Event planning or executing"] },
+            { name: "Mayka Mei", email: "moradaeast@gmail.com", activities: ["Organizing and coordinating with other captains in your census tract"] },
+            { name: "Megan Meo", email: "megan.m.meo@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Event planning or executing"] },
+            { name: "michael farah", email: "michaelfarahusa@gmail.com", activities: ["Representing Altagether at community events (like staffing a table)"] },
+            { name: "Neil Tyler", email: "neil.tyler@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain"] },
+            { name: "Rebecca zandovskis", email: "rebeccazoom@icloud.com", activities: ["Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Fundraising/grant-writing", "Social media", "Art/Graphic design", "Event planning or executing"] },
+            { name: "Richard Rieber", email: "rrieber@gmail.com", activities: ["Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)", "Fundraising/grant-writing"] },
+            { name: "Scott Uriu", email: "scotturiu@gmail.com", activities: ["Supporting nearby neighbors who don't have a captain", "Organizing and coordinating with other captains in your census tract", "Representing Altagether at community events (like staffing a table)", "Art/Graphic design"] },
+            { name: "Shannon Kearney", email: "shannonbrousseau@gmail.com", activities: ["Representing Altagether at community events (like staffing a table)"] },
+            { name: "Shé Shé Yancy", email: "ssryxoxo@aol.com", activities: ["Supporting nearby neighbors who don't have a captain", "Representing Altagether at community events (like staffing a table)"] },
+            { name: "Todd Bayer", email: "tjbayer@fuzzmo.us", activities: ["Organizing and coordinating with other captains in your census tract"] }
+        ];
+
+        let currentFilter = 'all';
+
+        function renderVolunteers(filter) {
+            const grid = document.getElementById('volunteerGrid');
+            const count = document.getElementById('count');
+            
+            let filtered = volunteers;
+            if (filter !== 'all') {
+                filtered = volunteers.filter(v => 
+                    v.activities.some(a => a === filter)
+                );
+            }
+
+            count.innerHTML = `<strong>${filtered.length}</strong> volunteer${filtered.length !== 1 ? 's' : ''} ${filter === 'all' ? 'total' : 'available'}`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-results">No volunteers found for this activity</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(v => `
+                <div class="volunteer-card">
+                    <div class="volunteer-name">${v.name}</div>
+                    <div class="volunteer-email">${v.email}</div>
+                    <div class="volunteer-activities">
+                        ${v.activities.map(a => `<span class="activity-tag">${a}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByActivity(activity) {
+            currentFilter = activity;
+            
+            document.querySelectorAll('.activity-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderVolunteers(activity);
+        }
+
+        renderVolunteers('all');
+    </script>
+</body>
+</html>
