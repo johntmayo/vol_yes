@@ -504,10 +504,10 @@
         }
 
         .list-view td:first-child {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
         }
 
         .list-view td:last-child {
@@ -615,7 +615,11 @@
                     <button class="copy-btn" onclick="copyEmails()">
                         📋 Copy All Emails
                     </button>
+                    <button class="copy-btn" onclick="copyAsCSV()">
+                        📊 Copy as CSV
+                    </button>
                     <span class="copied-message" id="copiedMessage">✓ Copied to clipboard!</span>
+                    <span class="copied-message" id="copiedCsvMessage">✓ CSV copied!</span>
                     
                     <h3>Volunteer Details</h3>
                     <table id="volunteerTable">
@@ -790,6 +794,26 @@
                 setTimeout(() => {
                     copiedMessage.classList.remove('show');
                 }, 2000);
+            });
+        }
+
+        function copyAsCSV() {
+            const filtered = currentFilter === 'all'
+                ? volunteers
+                : volunteers.filter(v => v.activities.includes(currentFilter));
+
+            const header = 'First Name,Full Name,Email';
+            const rows = filtered.map(v => {
+                const firstName = v.name.trim().split(/\s+/)[0];
+                const fullName = `"${v.name.replace(/"/g, '""')}"`;
+                return `${firstName},${fullName},${v.email}`;
+            });
+            const csv = [header, ...rows].join('\n');
+
+            navigator.clipboard.writeText(csv).then(() => {
+                const msg = document.getElementById('copiedCsvMessage');
+                msg.classList.add('show');
+                setTimeout(() => msg.classList.remove('show'), 2000);
             });
         }
 
